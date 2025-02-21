@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Observation</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Add Observation</h1>
+        <form action="/api/observations" method="post">
+            <!-- Type input field -->
+            <div class="form-group">
+                <label for="type">Type</label>
+                <input type="text" class="form-control" id="type" name="type" placeholder="Enter type" required>
+            </div>
+            <!-- Time input field -->
+            <div class="form-group">
+                <label for="time">Time</label>
+                <input type="datetime-local" class="form-control" id="time" name="time" required>
+            </div>
+            <!-- Comment input field -->
+            <div class="form-group">
+                <label for="comment">Comment</label>
+                <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Enter comment"></textarea>
+            </div>
+            <!-- Latitude input field -->
+            <div class="form-group">
+                <label for="latitude">Latitude</label>
+                <input type="number" class="form-control" id="latitude" name="latitude" step="any" placeholder="Enter latitude">
+            </div>
+            <!-- Longitude input field -->
+            <div class="form-group">
+                <label for="longitude">Longitude</label>
+                <input type="number" class="form-control" id="longitude" name="longitude" step="any" placeholder="Enter longitude">
+            </div>
+            <!-- User input field -->
+            <div class="form-group">
+                <label for="user">User</label>
+                <input type="text" class="form-control" id="user" name="user" placeholder="Enter user" required>
+            </div>
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary">Submit Observation</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
