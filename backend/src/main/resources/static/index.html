@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Observation</title>
+    <title>Observation Database</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Leaflet CSS -->
@@ -11,82 +11,105 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1>Add Observation</h1>
-        <form action="/api/observations" method="post">
-            <!-- Type input field -->
-            <div class="form-group">
-                <label for="type">Type</label>
-                <input type="text" class="form-control" id="type" name="type" placeholder="Enter type" required>
-            </div>
-            <!-- Time input field -->
-            <div class="form-group">
-                <label for="time">Time</label>
-                <input type="datetime-local" class="form-control" id="time" name="time" required>
-            </div>
-            <!-- Comment input field -->
-            <div class="form-group">
-                <label for="comment">Comment</label>
-                <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Enter comment"></textarea>
-            </div>
-            <!-- Latitude input field (updated via map click) -->
-            <div class="form-group">
-                <label for="latitude">Latitude</label>
-                <input type="text" class="form-control" id="latitude" name="latitude" readonly placeholder="Click on map to select latitude">
-            </div>
-            <!-- Longitude input field (updated via map click) -->
-            <div class="form-group">
-                <label for="longitude">Longitude</label>
-                <input type="text" class="form-control" id="longitude" name="longitude" readonly placeholder="Click on map to select longitude">
-            </div>
-            <!-- User input field -->
-            <div class="form-group">
-                <label for="user">User</label>
-                <input type="text" class="form-control" id="user" name="user" placeholder="Enter user" required>
-            </div>
-            <!-- Submit button -->
-            <button type="submit" class="btn btn-primary">Submit Observation</button>
-        </form>
+        <h1>Observation Database</h1>
 
-        <!-- Map container -->
-        <div id="map" style="height: 400px; margin-top: 20px;"></div>
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs" id="observationTabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#addObservation">Add Observation</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#viewObservations">View Observations</a>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3">
+            <!-- ADD OBSERVATION TAB -->
+            <div id="addObservation" class="tab-pane fade show active">
+                <form action="/api/observations" method="post">
+                    <div class="form-group">
+                        <label for="type">Type</label>
+                        <input type="text" class="form-control" id="type" name="type" placeholder="Enter type" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time</label>
+                        <input type="datetime-local" class="form-control" id="time" name="time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment">Comment</label>
+                        <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="latitude">Latitude</label>
+                        <input type="text" class="form-control" id="latitude" name="latitude" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="longitude">Longitude</label>
+                        <input type="text" class="form-control" id="longitude" name="longitude" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="user">User</label>
+                        <input type="text" class="form-control" id="user" name="user" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Observation</button>
+                </form>
+                <div id="map" style="height: 700px; margin-top: 20px;"></div>
+            </div>
+
+            <!-- VIEW OBSERVATIONS TAB -->
+            <div id="viewObservations" class="tab-pane fade">
+                <h3>Observation Map</h3>
+                <div id="observationsMap" style="height: 800px;"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
-        // Initialize the map
-        var map = L.map('map').setView([51.505, -0.09], 13); // Default center and zoom level
-
-        // Add a tile layer (OpenStreetMap tiles)
+        // Initialize Add Observation Map
+        var addMap = L.map('map').setView([51.505, -0.09], 5);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(addMap);
 
-        // Variable to store the marker
         var marker;
-
-        // Event listener for clicking on the map
-        map.on('click', function(e) {
+        addMap.on('click', function(e) {
             var lat = e.latlng.lat;
             var lon = e.latlng.lng;
-
-            // If a marker already exists, remove it
-            if (marker) {
-                marker.remove();
-            }
-
-            // Add a new marker at the clicked location
-            marker = L.marker([lat, lon]).addTo(map);
-
-            // Update the latitude and longitude input fields
+            if (marker) marker.remove();
+            marker = L.marker([lat, lon]).addTo(addMap);
             document.getElementById('latitude').value = lat;
             document.getElementById('longitude').value = lon;
         });
-    </script>
 
-    <!-- Bootstrap JS (Optional) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        // Initialize View Observations Map (when the tab is clicked)
+        $('a[href="#viewObservations"]').on('shown.bs.tab', function () {
+            var viewMap = L.map('observationsMap').setView([51.505, -0.09], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(viewMap);
+
+            // Fetch observations from backend
+            fetch('/api/observations')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(obs => {
+                        if (obs.latitude && obs.longitude) {
+                            L.marker([obs.latitude, obs.longitude])
+                                .addTo(viewMap)
+                                .bindPopup(`<b>${obs.type}</b><br>${obs.comment || 'No comment'}<br>By: ${obs.user}`);
+                        }
+                    });
+                })
+                .catch(error => console.error("Error fetching observations:", error));
+        });
+    </script>
 </body>
 </html>
