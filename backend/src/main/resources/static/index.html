@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Observation</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
     <div class="container mt-5">
@@ -25,15 +28,15 @@
                 <label for="comment">Comment</label>
                 <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Enter comment"></textarea>
             </div>
-            <!-- Latitude input field -->
+            <!-- Latitude input field (updated via map click) -->
             <div class="form-group">
                 <label for="latitude">Latitude</label>
-                <input type="number" class="form-control" id="latitude" name="latitude" step="any" placeholder="Enter latitude">
+                <input type="text" class="form-control" id="latitude" name="latitude" readonly placeholder="Click on map to select latitude">
             </div>
-            <!-- Longitude input field -->
+            <!-- Longitude input field (updated via map click) -->
             <div class="form-group">
                 <label for="longitude">Longitude</label>
-                <input type="number" class="form-control" id="longitude" name="longitude" step="any" placeholder="Enter longitude">
+                <input type="text" class="form-control" id="longitude" name="longitude" readonly placeholder="Click on map to select longitude">
             </div>
             <!-- User input field -->
             <div class="form-group">
@@ -43,8 +46,45 @@
             <!-- Submit button -->
             <button type="submit" class="btn btn-primary">Submit Observation</button>
         </form>
+
+        <!-- Map container -->
+        <div id="map" style="height: 400px; margin-top: 20px;"></div>
     </div>
 
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([51.505, -0.09], 13); // Default center and zoom level
+
+        // Add a tile layer (OpenStreetMap tiles)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Variable to store the marker
+        var marker;
+
+        // Event listener for clicking on the map
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lon = e.latlng.lng;
+
+            // If a marker already exists, remove it
+            if (marker) {
+                marker.remove();
+            }
+
+            // Add a new marker at the clicked location
+            marker = L.marker([lat, lon]).addTo(map);
+
+            // Update the latitude and longitude input fields
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lon;
+        });
+    </script>
+
+    <!-- Bootstrap JS (Optional) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
